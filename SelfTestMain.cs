@@ -3,7 +3,7 @@ using System.Data.SqlClient;
 
 namespace SelfTestingProgram
 {
-    class Program
+    class SelfTestMain
     {
         static void Main(string[] args)
         {
