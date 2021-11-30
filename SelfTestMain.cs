@@ -5,38 +5,56 @@ namespace SelfTestingProgram
 {
     class SelfTestMain
     {
-        //public int CheckRecordExists(int questionID)
-        //{
-        //    // Create and Open Database Connection
-        //    SqlConnection conn = new SqlConnection(@"Data Source=localhost; Initial Catalog=SelfTest; Integrated Security=True");
-        //    conn.Open();
+        public int CheckRecordExists(int questionID)
+        {
+            // Create and Open Database Connection
+            SqlConnection conn = new SqlConnection(@"Data Source=localhost; Initial Catalog=SelfTest; Integrated Security=True");
+            conn.Open();
 
-        //    // Select Records with QuestionID
-        //    string selectStatement = $"SELECT 1 FROM dbo.Questions WHERE QuestionID = {questionID};";
+            // Select Records with QuestionID
+            string selectStatement = $"SELECT 1 FROM dbo.Questions WHERE QuestionID = {questionID};";
 
-        //    SqlCommand selectCommand = new SqlCommand(selectStatement, conn);
-        //    SqlDataReader countReader = selectCommand.ExecuteReader();
+            SqlCommand selectCommand = new SqlCommand(selectStatement, conn);
+            SqlDataReader countReader = selectCommand.ExecuteReader();
 
-        //    // Check if DataReader contains rows
-        //    // If it does, return 1
-        //    // If it doesn't, return 0
-        //    if (countReader.HasRows)
-        //    {
-        //        return 1;
-        //    }
-        //    else
-        //    {
-        //        return 0;
-        //    }
+            // Check if DataReader contains rows
+            // If it does, return 1
+            // If it doesn't, return 0
+            if (countReader.HasRows)
+            {
+                return 1;
+            }
+            else
+            {
+                return 0;
+            }
 
-        //}
-        
-        
+        }
+
+
         // questionID parameter can either be a valid questionID value from the table
         // Or it can be -1 which indicates that all records should be selected from table
-        public void SelectData(int questionID)
+        // Acceptable columnFlag values:
+            // 0 = All columns
+            // 1 = Just the Question Column
+            // 2 = Just the Answer Column
+        public void SelectData(int questionID, int columnFlag)
         {
             string selectStatement;
+
+            // Set selectStatement based on columnFlag Value
+            if(columnFlag == 0)     // Select All Columns
+            {
+                selectStatement = "SELECT QuestionID, Question, Answer FROM dbo.Question";
+            }
+            else if (columnFlag == 1)   // Select Question Column
+            {
+                selectStatement = "SELECT Question FROM dbo.Question;";
+            }
+            else if (columnFlag == 2)   // Select Answer Column
+            {
+                selectStatement = "SELECT Answer FROM dbo.Question;";
+            }
 
             // Create & Open Database Connection
             SqlConnection conn = new SqlConnection(@"Data Source=localhost; Initial Catalog=SelfTest; Integrated Security=True");
@@ -45,7 +63,7 @@ namespace SelfTestingProgram
             // Select Appropriate Data
             if (questionID == -1)    // Get all records from table
             {
-                selectStatement = @"SELECT QuestionID, Question, Answer FROM dbo.Question;";
+                //selectStatement = @"SELECT QuestionID, Question, Answer FROM dbo.Question;";
 
                 SqlCommand selectQuestionsAndAnswersCMD = new SqlCommand(selectStatement, conn);
                 SqlDataReader selectReader = selectQuestionsAndAnswersCMD.ExecuteReader();
@@ -66,7 +84,7 @@ namespace SelfTestingProgram
             }
             else if (questionID > 0)    // Get only one record from table by QuestionID
             {
-                selectStatement = $"SELECT QuestionID, Question, Answer FROM dbo.Question WHERE QuestionID = {questionID};";
+                selectStatement = selectStatement + $" WHERE QuestionID = {questionID};";
 
                 SqlCommand selectQuestionsAndAnswersCMD = new SqlCommand(selectStatement, conn);
                 SqlDataReader selectReader = selectQuestionsAndAnswersCMD.ExecuteReader();
@@ -271,11 +289,31 @@ namespace SelfTestingProgram
             {
                 Console.WriteLine("You are about to begin the self-testing program. To exit at any time, type \"exit\" in the answer field.");
 
-                /*
-                 * 
-                 * ADD STUFF HERE
-                 * 
-                 */
+                // Get the min and max QuestionID values
+                SelfTestMain functionCall = new SelfTestMain();
+
+                int minQuestionID = functionCall.GetMinQuestionID();
+                int maxQuestionID = functionCall.GetMaxQuestionID();
+                int idExists = 0;
+
+                // Loop through all questions by QuestionID value
+                for (int currentQuestionID = minQuestionID; currentQuestionID <= maxQuestionID; currentQuestionID++)
+                {
+                    // Verify that record exists with provided QuestionID value
+                    // If it does not, continue loop at next value
+                    idExists = functionCall.CheckRecordExists(currentQuestionID);
+                    if(idExists == 0)   // Record doesn't exist
+                    {
+                        continue;
+                    }
+                    else    // Record exists, display question
+                    {
+                        // Execute the SelectData function for the current QuestionID
+                        functionCall.SelectData()
+                    }
+                }
+
+
             }
             else if (menuSelection == 2)
             {
