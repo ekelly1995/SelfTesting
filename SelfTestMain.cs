@@ -354,7 +354,7 @@ namespace SelfTestingProgram
                         userAnswer = Console.ReadLine();
 
                         // Check if user has entered "exit" to stop test
-                        if (userAnswer != "exit")
+                        if (userAnswer.ToUpper() != "EXIT")
                         {
                             // Check if user's answer was correct
                             wasUserCorrect = functionCall.checkAnswer(currentQuestionID, userAnswer);
@@ -410,7 +410,7 @@ namespace SelfTestingProgram
                     if(newQuestionID != -1) // If the QuestionID exists, display the record
                     {
                         Console.WriteLine("New question was successfully entered: ");
-                        functionCall.SelectData(newQuestionID);
+                        functionCall.SelectData(newQuestionID,0);
                     }
                     else
                     {
@@ -438,14 +438,14 @@ namespace SelfTestingProgram
                         // Display Values Before Updating
                         Console.WriteLine($"Current values of specified record: ");
                         SelfTestMain functionCall = new SelfTestMain();
-                        functionCall.SelectData(updateQuestionID);
+                        functionCall.SelectData(updateQuestionID,0);
 
                         // Update the record
                         functionCall.UpdateData(updateQuestionID, newQuestion, newAnswer);
 
                         Console.WriteLine("Record has been updated to the follow values: ");
                         // Display Values After Updating
-                        functionCall.SelectData(updateQuestionID);
+                        functionCall.SelectData(updateQuestionID,0);
                     }
                     else if(newQuestion == "" && newAnswer == "")   // If no new values were supplied to use to update ther records, let user know and end program
                     {
@@ -460,7 +460,7 @@ namespace SelfTestingProgram
 
                 int questionIDSelectAll = -1;
                 SelfTestMain functionCall = new SelfTestMain();
-                functionCall.SelectData(questionIDSelectAll);
+                functionCall.SelectData(questionIDSelectAll,0);
             }
             else
             {
