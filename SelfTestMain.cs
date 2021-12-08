@@ -40,7 +40,7 @@ namespace SelfTestingProgram
             // 2 = Just the Answer Column
         public void SelectData(int questionID, int columnFlag)
         {
-            string selectStatement;
+            string selectStatement = "";
 
             // Set selectStatement based on columnFlag Value
             if(columnFlag == 0)     // Select All Columns
