@@ -213,6 +213,42 @@ namespace SelfTestingProgram
             return;
         }
 
+        public int checkAnswer(int questionID, string userAnswer)
+        {
+            string storedAnswer = "";
+            string getAnswerStatement = $"SELECT Answer FROM dbo.Question WHERE QuestionID = {questionID};";
+
+            // Create & open database connection
+            SqlConnection conn = new SqlConnection(@"Data Source=localhost; Initial Catalog=SelfTest; Integrated Security=True");
+            conn.Open();
+
+            // Get answer from DB for QuestionID
+            SqlCommand getDataCommand = new SqlCommand(getAnswerStatement, conn);
+            SqlDataReader selectReader = getDataCommand.ExecuteReader();
+
+            if(selectReader.HasRows)
+            {
+                storedAnswer = Convert.ToString(selectReader[0]);
+            }
+            else
+            {
+                Console.WriteLine("There was an issue with reading from the database.");
+            }
+
+            // Compare stored answer to user's answer
+                // Incorrect = 0
+                // Correct = 1
+            if(storedAnswer == userAnswer)  // User was correct
+            {
+                return 1;
+            }
+            else
+            {
+                return 0;
+            }
+
+        }
+
         public int GetMaxQuestionID()
         {
             int maxQuestionID = 0;
@@ -287,7 +323,7 @@ namespace SelfTestingProgram
             // Three selection paths
             if(menuSelection == 1)
             {
-                Console.WriteLine("You are about to begin the self-testing program. To exit at any time, type \"exit\" in the answer field.");
+                Console.WriteLine("You are about to begin the self test. To exit at any time, type \"exit\" in the answer field.");
 
                 // Get the min and max QuestionID values
                 SelfTestMain functionCall = new SelfTestMain();
@@ -295,6 +331,8 @@ namespace SelfTestingProgram
                 int minQuestionID = functionCall.GetMinQuestionID();
                 int maxQuestionID = functionCall.GetMaxQuestionID();
                 int idExists = 0;
+                int wasUserCorrect = 0;
+                string userAnswer = "";
 
                 // Loop through all questions by QuestionID value
                 for (int currentQuestionID = minQuestionID; currentQuestionID <= maxQuestionID; currentQuestionID++)
@@ -304,12 +342,42 @@ namespace SelfTestingProgram
                     idExists = functionCall.CheckRecordExists(currentQuestionID);
                     if(idExists == 0)   // Record doesn't exist
                     {
-                        continue;
+                        continue;   // Go to next QuestionID value with loop
                     }
                     else    // Record exists, display question
                     {
-                        // Execute the SelectData function for the current QuestionID
-                        functionCall.SelectData()
+                        // Display the question
+                        functionCall.SelectData(currentQuestionID, 1);
+
+                        // Prompt user to enter an answer
+                        Console.Write("Answer: ");
+                        userAnswer = Console.ReadLine();
+
+                        // Check if user has entered "exit" to stop test
+                        if (userAnswer != "exit")
+                        {
+                            // Check if user's answer was correct
+                            wasUserCorrect = functionCall.checkAnswer(currentQuestionID, userAnswer);
+
+                            // Display correct answer and user's answer and inform them if they were correct
+                            Console.Write("Correct Answer: ");
+                            functionCall.SelectData(currentQuestionID, 2);
+                            
+                            Console.WriteLine($"Your answer: {userAnswer}");
+                            if(wasUserCorrect == 0)
+                            {
+                                Console.WriteLine("You were incorrect.");
+                            }
+                            else
+                            {
+                                Console.WriteLine("You were correct!");
+                            }
+
+                        }
+                        else    //User wants to exit
+                        {
+                            return;
+                        }
                     }
                 }
 
