@@ -41,6 +41,10 @@ namespace SelfTestingProgram
         public void SelectData(int questionID, int columnFlag)
         {
             string selectStatement = "";
+            string rowToPrint = "";
+            string questionIDString = "";
+            string questionString = "";
+            string answerString = "";
 
             // Set selectStatement based on columnFlag Value
             if(columnFlag == 0)     // Select All Columns
@@ -71,7 +75,11 @@ namespace SelfTestingProgram
                 {
                     while (selectReader.Read())
                     {
-                        Console.WriteLine(selectReader[0] + "\t" + selectReader[1] + "\t" + selectReader[2]);
+                        questionIDString = Convert.ToString(selectReader[0]);
+                        questionString = Convert.ToString(selectReader[1]);
+                        answerString = Convert.ToString(selectReader[2]);
+
+                        Console.WriteLine($"{questionIDString,-20}{questionString,-20}{answerString,-30}");
                     }
                 }
                 else
@@ -92,7 +100,11 @@ namespace SelfTestingProgram
                 {
                     while (selectReader.Read())
                     {
-                        Console.WriteLine(selectReader[0] + "\t" + selectReader[1] + "\t" + selectReader[2]);
+                        questionIDString = Convert.ToString(selectReader[0]);
+                        questionString = Convert.ToString(selectReader[1]);
+                        answerString = Convert.ToString(selectReader[2]);
+
+                        Console.WriteLine($"{questionIDString,-20}{questionString,-20}{answerString,-30}");
                     }
                 }
                 else
@@ -456,7 +468,10 @@ namespace SelfTestingProgram
             }
             else if (menuSelection == 3)    // Show all existing questions and answers in the database
             {
+                string headerRow = "";
                 Console.WriteLine("Now displaying all existing questions and answers for you to review:");
+                headerRow = String.Format("{0,0}{1,20}{2,20}", "QuestionID", "Question", "Answer");
+                Console.WriteLine(headerRow);
 
                 int questionIDSelectAll = -1;
                 SelfTestMain functionCall = new SelfTestMain();
