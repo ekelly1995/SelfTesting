@@ -133,35 +133,14 @@ namespace SelfTestingProgram
             string insertStatement = "";
             string selectStatement = "";
             int questionID = -1;
-            string correctedQuestion = "";
-            string correctedAnswer = "";
 
 
             // Create & Open Database Connection
             SqlConnection conn = new SqlConnection(@"Data Source=localhost; Initial Catalog=SelfTest; Integrated Security=True");
             conn.Open();
 
-            // Get user values ready to insert into database
-            if(question.Contains('\''))
-            {
-                correctedQuestion = question.Replace("\'", "\'\'");
-            }
-            else
-            {
-                correctedQuestion = question;
-            }
-
-            if(answer.Contains('\''))
-            {
-                correctedAnswer = answer.Replace("\'", "\'\'");
-            }
-            else
-            {
-                correctedAnswer = answer;
-            }
-
             // Insert data into table
-            insertStatement = $"INSERT INTO dbo.Question (Question, Answer) VALUES ('{correctedQuestion}','{correctedAnswer}');";
+            insertStatement = $"INSERT INTO dbo.Question (Question, Answer) VALUES ('{question}','{answer}');";
 
             SqlCommand insertCommand = new SqlCommand(insertStatement, conn);
             insertCommand.ExecuteNonQuery();
