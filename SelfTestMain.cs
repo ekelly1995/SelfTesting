@@ -64,6 +64,11 @@ namespace SelfTestingProgram
             SqlConnection conn = new SqlConnection(@"Data Source=localhost; Initial Catalog=SelfTest; Integrated Security=True");
             conn.Open();
 
+            // Print the header row
+            string headerRow = "";
+            headerRow = String.Format("{0,-15}{1,-40}{2,-40}", "QuestionID", "Question", "Answer");
+            Console.WriteLine(headerRow);
+
             // Select Appropriate Data
             if (questionID == -1)    // Get all records from table
             {
@@ -484,10 +489,7 @@ namespace SelfTestingProgram
             }
             else if (menuSelection == 3)    // Show all existing questions and answers in the database
             {
-                string headerRow = "";
                 Console.WriteLine("Now displaying all existing questions and answers for you to review:");
-                headerRow = String.Format("{0,-15}{1,-40}{2,-40}", "QuestionID", "Question", "Answer");
-                Console.WriteLine(headerRow);
 
                 int questionIDSelectAll = -1;
                 SelfTestMain functionCall = new SelfTestMain();
