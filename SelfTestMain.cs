@@ -121,6 +121,8 @@ namespace SelfTestingProgram
             return;
         }
 
+        // This function will insert specified records into the database
+        // and will then return the ID of the record that was inserted for verification
         public int InsertData(string question, string answer)
         {
             string insertStatement;
@@ -137,19 +139,23 @@ namespace SelfTestingProgram
             SqlCommand insertCommand = new SqlCommand(insertStatement, conn);
             insertCommand.ExecuteNonQuery();
             Console.WriteLine("Record has been successfully inserted.");
+            conn.Close();
 
             // Get QuestionID value of newly created record
             selectStatement = $"SELECT QuestionID FROM dbo.Question WHERE Question = '{question}' AND Answer = '{answer}';";
 
-            SqlCommand selectCommand = new SqlCommand(selectStatement, conn);
+            SqlConnection connSelect = new SqlConnection(@"Data Source=localhost; Initial Catalog=SelfTest; Integrated Security=True");
+            connSelect.Open();
+
+            SqlCommand selectCommand = new SqlCommand(selectStatement, connSelect);
             SqlDataReader selectReader = selectCommand.ExecuteReader();
 
-            if (selectReader.HasRows)
+            while (selectReader.Read())
             {
                 questionID = Convert.ToInt32(selectReader[0]);
             }
 
-            conn.Close();
+            connSelect.Close();
 
             return questionID;
             // If there was an issue with the insert/select, the value of questionID will still be -1
@@ -406,29 +412,37 @@ namespace SelfTestingProgram
                 // Check if user wants to update existing question or add a new question
                 if (subMenuSelection.ToUpper() == "NEW")
                 {
+                    //Create loop that allows user to keep adding new questions in the console
+                    string continueLoop = "1";
                     int newQuestionID = 0;
                     int checkRecordExists = -1;
 
-                    Console.WriteLine("You have selected to add a new question to the test.");
-                    Console.Write("Question: ");
-                    newQuestion = Console.ReadLine();
-                    Console.Write("Answer: ");
-                    newAnswer = Console.ReadLine();
-
-                    // Call method to insert question into database
-                    // Insert method returns the ID value of the question that is added
-                    SelfTestMain functionCall = new SelfTestMain();
-                    newQuestionID = functionCall.InsertData(newQuestion, newAnswer);
-
-                    // Validate that question was created successfully by selecting record from database and showing it to user
-                    if(newQuestionID != -1) // If the QuestionID exists, display the record
+                    while (continueLoop == "1")
                     {
-                        Console.WriteLine("New question was successfully entered: ");
-                        functionCall.SelectData(newQuestionID,0);
-                    }
-                    else
-                    {
-                        Console.WriteLine("There was an issue with inserting the record into the database. Please try again.");
+                        Console.WriteLine("You have selected to add a new question to the test.");
+                        Console.Write("Question: ");
+                        newQuestion = Console.ReadLine();
+                        Console.Write("Answer: ");
+                        newAnswer = Console.ReadLine();
+
+                        // Call method to insert question into database
+                        // Insert method returns the ID value of the question that is added
+                        SelfTestMain functionCall = new SelfTestMain();
+                        newQuestionID = functionCall.InsertData(newQuestion, newAnswer);
+
+                        // Validate that question was created successfully by selecting record from database and showing it to user
+                        if (newQuestionID != -1) // If the QuestionID exists, display the record
+                        {
+                            Console.WriteLine("New question was successfully entered: ");
+                            functionCall.SelectData(newQuestionID, 0);
+                        }
+                        else
+                        {
+                            Console.WriteLine("There was an issue with inserting the record into the database. Please try again.");
+                        }
+
+                        Console.WriteLine("Enter a new question? Enter 1 for Yes and 0 for No");
+                        continueLoop = Console.ReadLine();
                     }
 
                 }
