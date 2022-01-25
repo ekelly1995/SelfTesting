@@ -79,7 +79,8 @@ namespace SelfTestingProgram
                         questionString = Convert.ToString(selectReader[1]);
                         answerString = Convert.ToString(selectReader[2]);
 
-                        Console.WriteLine($"{questionIDString,-20}{questionString,-20}{answerString,-30}");
+                        rowToPrint = String.Format("{0,-15}{1,-40}{2,-40}", (Convert.ToString(selectReader[0])), (Convert.ToString(selectReader[1])), (Convert.ToString(selectReader[2])));
+                        Console.WriteLine(rowToPrint);
                     }
                 }
                 else
@@ -104,7 +105,8 @@ namespace SelfTestingProgram
                         questionString = Convert.ToString(selectReader[1]);
                         answerString = Convert.ToString(selectReader[2]);
 
-                        Console.WriteLine($"{questionIDString,-20}{questionString,-20}{answerString,-30}");
+                        rowToPrint = String.Format("{0,-15}{1,-40}{2,-40}", (Convert.ToString(selectReader[0])), (Convert.ToString(selectReader[1])), (Convert.ToString(selectReader[2])));
+                        Console.WriteLine(rowToPrint);
                     }
                 }
                 else
@@ -470,7 +472,7 @@ namespace SelfTestingProgram
             {
                 string headerRow = "";
                 Console.WriteLine("Now displaying all existing questions and answers for you to review:");
-                headerRow = String.Format("{0,0}{1,20}{2,20}", "QuestionID", "Question", "Answer");
+                headerRow = String.Format("{0,-15}{1,-40}{2,-40}", "QuestionID", "Question", "Answer");
                 Console.WriteLine(headerRow);
 
                 int questionIDSelectAll = -1;
