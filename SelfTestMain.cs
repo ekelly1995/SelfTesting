@@ -333,6 +333,7 @@ namespace SelfTestingProgram
 
         static void Main(string[] args)
         {
+            // TODO: Add functionality to keep looping through menus until user chooses to back out to previous menu option (so I don't have to keep restarting program)
 
             // Declare Variables
             int menuSelection = 0;
@@ -410,7 +411,12 @@ namespace SelfTestingProgram
             }
             else if (menuSelection == 2)
             {
+                // TODO: Add the funtionality to delete records from the console application
+
+
                 Console.WriteLine("All current questions and their corresponding answers will be displayed here shortly.");
+                // TODO: List all of the questions here
+
                 Console.WriteLine("Please enter the ID value of the question you would like to edit, or type \"NEW\" to create a new question:");
                 subMenuSelection = Console.ReadLine();
 
